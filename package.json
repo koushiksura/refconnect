@@ -1,0 +1,19 @@
+{
+  "name": "refconnect",
+  "version": "1.0.0",
+  "description": "An application to help refugees connect with NGOs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sakshi35/refconnect.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sakshi35/refconnect/issues"
+  },
+  "homepage": "https://github.com/sakshi35/refconnect#readme"
+}
