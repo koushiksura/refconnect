@@ -21,7 +21,7 @@ const RefugeeSchema = new mongoose.Schema({
 	govID: {
 		type: String,
 		lowercase: true,
-	}
+	},
 
 	email: {
 		type:String,
@@ -50,7 +50,7 @@ const RefugeeSchema = new mongoose.Schema({
 			type: String, 
 			required: true,
 			lowercase: true,
-		}
+		},
 
 		zipcode: {
 			type: Number, 

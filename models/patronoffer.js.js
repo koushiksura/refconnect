@@ -10,7 +10,7 @@ const PatronOffer =  new mongoose.schema({
 
 	noPeople: {
 		type: Number, 
-	}
+	},
 
 	addressOfAccomodation: {
 
@@ -30,7 +30,7 @@ const PatronOffer =  new mongoose.schema({
 			type: String, 
 			required: true,
 			lowercase: true,
-		}
+		},
 
 		zipcode: {
 			type: Number, 
