@@ -10,13 +10,18 @@ const http = require('http')
 var app=express()
 const server = http.createServer(app);
 
-app.use(expressLayouts);
+// app.use(expressLayouts);
 app.set('view engine','ejs');
 // app.use(express.static('./static'));
 app.use('/uploads', express.static('./uploads'))
 app.use(express.static('./uploads'));
 // app.use('/styles', express.static('styles'))
 
+mongoose.connect('mongodb+srv://refugee:test123@cluster0.uxmhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{   useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+.then(()=>console.log('connected to mongodb'))
+.catch(err=>console.log(err))
 
 
 //db congif
@@ -49,6 +54,9 @@ app.use(urlencodedparser);
   })
   
   
+  app.use('/',require('./routes/refugee.route'));
+
+
   app.use(multer({ storage: storage }).any());
   app.get("*", function(req, res){
     res.render('error');
