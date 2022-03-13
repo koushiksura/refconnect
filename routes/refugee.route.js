@@ -16,12 +16,11 @@ const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
 const wellKnown = require('nodemailer/lib/well-known');
-<<<<<<< HEAD
+
 const PatronOffer = require('../models/patronoffer.js');
 const { request } = require('http');
-=======
+
 const { response } = require('express');
->>>>>>> 5c91dcaaa118324f075cc6a2c9295143621c6e51
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
 
