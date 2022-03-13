@@ -1,16 +1,23 @@
 const mongoose = require('mongoose');
 
 const RefugeeSchema = new mongoose.Schema({
-	name: {
+	firstname: {
 		type:String,
 		required:true,
 		lowercase:true,
+		trim : true
+	},
+	lastname : {
+		type : String,
+		required : true,
+		lowercase : true,
+		trim : true
 	},
 
 	age: {
 		type: Number,
 		required: true,
-	}, 
+	},
 
 	gender: {
 		type: String,
@@ -33,28 +40,28 @@ const RefugeeSchema = new mongoose.Schema({
 	},
 
 	home_address: {
-		
+
 		street: {
-			type: String, 
+			type: String,
 			required:true,
 			lowercase:true,
 		},
 
 		locality: {
-			type: String, 
+			type: String,
 			required: true,
 			lowercase: true,
 		},
 
 		city: {
-			type: String, 
+			type: String,
 			required: true,
 			lowercase: true,
 		},
 
 		zip: {
-			type: Number, 
-			required: true, 
+			type: Number,
+			required: true,
 			lowercase: true,
 		}
 
@@ -65,4 +72,4 @@ const RefugeeSchema = new mongoose.Schema({
 
 const Refugee = mongoose.model('Refugee',RefugeeSchema);
 
-module.exports=Refugee; 
+module.exports=Refugee;
