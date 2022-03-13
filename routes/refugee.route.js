@@ -127,7 +127,8 @@ router.post('/getPatrons',(req,res)=>{
     PatronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
         console.log("lol")
         for (var i = 0;i < response.length;i++){
-            await PatronUser.findOne({"id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+            await PatronUser.findOne({"_id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+                console.log(res1)
                 response[i].name = res1.name;
             })
         }
@@ -140,16 +141,19 @@ router.post('/getPatrons',(req,res)=>{
 })
 
 router.post('/getPatronDetails',(req,res)=>{
+  console.log("----------------------")
+  console.log(req.body)
   const Id  = req.body.Id;
   PatronOffer.find({_id : Id}).lean().then(async (offer_details) => {
-    await PatronUser.findById(offer_details.patronID).then((patron_details)=>{
-      offer_details.name = patron_details.name;
-      offer_details.phone_number = patron_details.phone_number;
-      offer_details.email = patron_details.email;
+    console.log(offer_details)
+    await PatronUser.findById(new mongoose.Types.ObjectId(offer_details[0].patronID)).then((patron_details)=>{
+      offer_details[0].name = patron_details.name;
+      offer_details[0].phone_number = patron_details.phone_number;
+      offer_details[0].email = patron_details.email;
+      res.json({"patron_details" : patron_details})
     })
-    res.json({"patron_details" : patron_details})
+   
   })
-
 })
 
 router.get('/findPeople',(req,res)=>{

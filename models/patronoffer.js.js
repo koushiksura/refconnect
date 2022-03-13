@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
-const patronUser = require('./patron')
+const patronUser = require('./patron.js')
 
 const PatronOfferSchema =  new mongoose.Schema({
 
 	patronID: { 
 		type: mongoose.Schema.Types.ObjectId, 
-		ref: 'Patron' 
+		ref: patronUser 
 	},
 
 	noPeople: {
