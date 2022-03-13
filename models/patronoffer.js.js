@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const patronUser = require('Patron')
 
-const PatronOffer =  new mongoose.schema({
+const PatronOfferSchema =  new mongoose.schema({
 
 	patronID: { 
 		type: Schema.Types.ObjectId, 
@@ -32,7 +32,7 @@ const PatronOffer =  new mongoose.schema({
 			lowercase: true,
 		},
 
-		zipcode: {
+		zip: {
 			type: Number, 
 			required: true, 
 			lowercase: true,
@@ -43,6 +43,6 @@ const PatronOffer =  new mongoose.schema({
 })
 
 
-const Refugee = mongoose.model('Refugee',RefugeeSchema);
+const PatronOffer = mongoose.model('PatronOffer',PatronOfferSchema);
 
-module.exports=Refugee; 
+module.exports = PatronOffer; 

@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
         required : true,
         lowercase : true
     },
-    contact : {
+    phone_number: {
         type : String,
         required : true,
         maxlength : 11
@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
         required : true
     },
     address : {
-        streetaddress : {
+        street : {
             type : String,
             required : true,
             lowercase : true,
@@ -44,6 +44,6 @@ const UserSchema = new mongoose.Schema({
 
 });
 
-const Ngouser = mongoose.model('Ngouser',UserSchema);
+const NgoUser = mongoose.model('NgoUser',UserSchema);
 
-module.exports = Ngouser;
+module.exports = NgoUser;

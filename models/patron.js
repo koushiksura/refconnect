@@ -18,7 +18,7 @@ const PatronSchema = new mongoose.Schema({
 		maxlength:11,
 	},
 
-	home_address: {
+	address: {
 		type:String,
 		required:true
 	},

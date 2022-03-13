@@ -52,7 +52,7 @@ const RefugeeSchema = new mongoose.Schema({
 			lowercase: true,
 		},
 
-		zipcode: {
+		zip: {
 			type: Number, 
 			required: true, 
 			lowercase: true,

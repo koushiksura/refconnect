@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Ngouser = require('./ngouser');
+const patron = require('./patron');
 
 const ReqSchema = new mongoose.Schema({
     refugees : {
@@ -16,10 +16,10 @@ const ReqSchema = new mongoose.Schema({
     },
     assigned : {
         type : Schema.Types.ObjectId,
-        ref : Ngouser
+        ref : patron
     }
 });
 
-const Request = mongoose.model('Req',ReqSchema);
+const Request = mongoose.model('RefugeeRequest',ReqSchema);
 
 module.exports = Request;
