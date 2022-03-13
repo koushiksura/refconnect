@@ -15,6 +15,8 @@ const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
 const wellKnown = require('nodemailer/lib/well-known');
+const PatronOffer = require('../models/patronoffer.js');
+const { request } = require('http');
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
 
@@ -91,19 +93,27 @@ router.get('/ngo_view',(req,res)=>{
         }
         requests[i].names = each_names
       }
-      console.log(requests)
       res.render( 'ngo.view.ejs' , { refugee_requests : requests} )
   })
 })
 
 
 router.post('/getPatrons',(req,res)=>{
+  console.log(req.body);
 
     res.json({"patrons" : 2})
 })
 
 router.post('/getPatronDetails',(req,res)=>{
-    res.json({"name" : 'lolaboy'})
+  const Id  = req.body.Id;
+  PatronOffer.find({_id : Id}).lean().then(async (offer_details) => {
+    await PatronUser.findById(offer_details.patronID).then((patron_details)=>{
+      offer_details.name = patron_details.name;
+      offer_details.phone_number = patron_details.phone_number;
+      offer_details.email = patron_details.email;
+    })
+    res.json({"patron_details" : patron_details})
+  })
 })
 
 router.get('/findPeople',(req,res)=>{
