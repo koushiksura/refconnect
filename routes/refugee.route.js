@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose')
 const NGOUser = require('../models/ngouser')
 const RefugeeUser = require('../models/refugee')
+const PatronUser = require('../models/patron')
 // const request = require('../models/req')
 
 const router = express.Router();
@@ -17,13 +18,14 @@ router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
   });
 
-  router.get('/refugeeForm',(req,res)=>{
+    // When the New Refugee form is visited
+    router.get('/refugeeForm',(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
 
 
   // When the SUBMIT button on the new refugee form is hit.
-router.post('/refugeeForm', (req, res)=>{
+    router.post('/refugeeForm', (req, res)=>{
     let newRefugeeUser = new RefugeeUser({
 
         firstname: req.body.firstname,
@@ -31,22 +33,39 @@ router.post('/refugeeForm', (req, res)=>{
         age: req.body.age,
         gender: req.body.age,
         govID: req.body.govID,
-        phone_number: 9889889889,
-        email: 'welovepeace@go.com',
+        phone_number: req.body.phone_number,
+        email: req.body.email,
         home_address:{ street: req.body.street,
         locality: req.body.locality, city: req.body.city, zip: req.body.zip}
 
     })
 
-
-    newRefugeeUser.save()
-.then(res.redirect('/ngo_view'))
-})
+        newRefugeeUser.save()
+        .then(res.redirect('/ngo_view'))
+    })
     
 
+    // When the Patron form is visited
     router.get('/patronForm',(req,res)=>{
         res.render('patronForm.ejs')
       });
+
+    // When the SUBMIT button on the new Patron form is hit.
+    router.post('/patronForm',(req,res)=>{
+    let newPatronUser = new PatronUser({
+        name: req.body.firstname + req.body.lastname,
+        phone_number: req.body.phone_number,
+        email: req.body.email,
+        address: req.body.street + " " 
+        + req.body.locality + " " + 
+        req.body.city + " " + req.body.zip,
+        password: "Patron@1234"
+
+      })
+
+        newPatronUser.save()
+        .then(res.redirect('/ngo_view'))
+    })
 
 
 router.get('/ngo_view',(req,res)=>{
@@ -57,6 +76,7 @@ router.get('/ngo_view',(req,res)=>{
 })
 
 router.post('/getPatrons',(req,res)=>{
+    
     res.json({"patrons" : 2})
 })
 
