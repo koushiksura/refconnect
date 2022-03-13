@@ -88,6 +88,12 @@ router.post('/getPatronDetails',(req,res)=>{
     res.json({"name" : 'lolaboy'})
 })
 
+router.get('/findPeople',(req,res)=>{
+
+    res.render('findPeople.ejs',{"matching_data" : ['koushik','dsk','sashank']})
+})  
+
+
 
 
 
