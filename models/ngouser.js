@@ -41,10 +41,6 @@ const UserSchema = new mongoose.Schema({
             maxlength : 7
         }
     },
-    time : {
-        type : Date,
-        default : Date.now
-    }
 
 });
 
