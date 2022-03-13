@@ -4,6 +4,8 @@ const { check, validationResult } = require('express-validator');
 
 const mongoose = require('mongoose')
 const NGOUser = require('../models/ngouser')
+const Refugeerequest = require('../models/req')
+const Refugee = require('../models/refugee')
 const RefugeeUser = require('../models/refugee')
 const PatronUser = require('../models/patron')
 // const request = require('../models/req')
@@ -11,8 +13,12 @@ const PatronUser = require('../models/patron')
 const router = express.Router();
 const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
+const { findById } = require('../models/ngouser');
+const wellKnown = require('nodemailer/lib/well-known');
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
+
+ngouser_id = '622d5aa13b43b65219d17e80'
 
 router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
@@ -73,11 +79,23 @@ router.get('/hello',(req,res)=>{
 
 
 router.get('/ngo_view',(req,res)=>{
-
-
-
-    res.render('ngo.view.ejs',{"refugee_requests" : 5})
+  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(ngouser_id)}).lean().then(async (requests)=>{
+      for (let  i = 0; i < requests.length;i++){
+        const each_names = [];
+        requests[i].names = [];
+        for(let j = 0; j < requests[i].refugees.length;j++){
+          var string_id  = String((requests[i].refugees[j]).valueOf())
+          await Refugee.findById(string_id).then((res)=>{
+          each_names.push(res.firstname.concat(" ",res.lastname))
+          })
+        }
+        requests[i].names = each_names
+      }
+      console.log(requests)
+      res.render( 'ngo.view.ejs' , { refugee_requests : requests} )
+  })
 })
+
 
 router.post('/getPatrons',(req,res)=>{
 
