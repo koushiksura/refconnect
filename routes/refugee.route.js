@@ -16,20 +16,25 @@ router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
   });
 
+  router.get('/refugeeForm',(req,res)=>{
+      res.render('refugeeFormTemplate.ejs')
+    });
+    
 router.get('/ngo_view',(req,res)=>{
 
 
 
     res.render('ngo.view.ejs',{"refugee_requests" : 5})
-}) 
+})
 
 router.post('/getPatrons',(req,res)=>{
     res.json({"patrons" : 2})
-})  
+})
 
 router.post('/getPatronDetails',(req,res)=>{
     res.json({"name" : 'lolaboy'})
-})  
+})
+
 
 
 // When the SUBMIT button on the new refugee form is hit.

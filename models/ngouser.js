@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
             lowercase : true
         },
         zip : {
-            type : String,
+            type : Number,
             required : true,
             maxlength : 7
         }
