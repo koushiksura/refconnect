@@ -1,0 +1,53 @@
+<html data-ember-extension="1">
+   <head>
+      <style>
+        .search_bar {
+          margin-left: 20%;
+          width: 600px;
+          height: 50px;
+          border-radius: 0.5em;
+          border-style: solid;
+          border-width: 1px;
+          overflow: hidden;
+          min-width: 0%;
+          border-color: rgb(210, 214, 218);
+        }
+        .search_label {
+          margin-left: 21%;
+          margin-top: 2%;
+          font-family: Roboto, Helvetica, Arial, sans-serif;
+          font-weight: 400;
+          line-height: 1.4375em;
+          letter-spacing: 0.00938em;
+          color: rgba(0, 0, 0, 0.87);
+        }
+      </style>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+      <script>
+      function getRefugees(searchWord){
+        document.getElementById("refugeeLists").innerHTML = ""
+      $.ajax({
+       type:'POST',
+       url:'/getRefugees',
+       data:{
+         searchKeyWord:searchWord
+       },
+       success:function(data){
+           console.log(data)
+           for(var i = 0; i < data.data.length; i++){
+             console.log("data.data[i]: "+data.data[i].firstname);
+           document.getElementById("refugeeLists").innerHTML+=
+           `<option value="` + data.data[i].firstname+data.data[i].lastname + `"/>`;
+             }
+             }
+           });
+      }
+      </script>
+   </head>
+   <body>
+   <label data-shrink="false" for="mui-1" id="mui-1-label" class="search_label">Search here</label>
+    <input list="refugeeLists" aria-invalid="false" class="search_bar" type="text" value="" id="searchRefugees" onkeypress="getRefugees(this.value)">
+    <datalist id="refugeeLists">
+    </datalist>
+   </body>
+</html>

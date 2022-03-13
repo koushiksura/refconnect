@@ -6,6 +6,9 @@ const mongoose = require('mongoose')
 const NGOUser = require('../models/ngouser')
 const Refugeerequest = require('../models/req')
 const Refugee = require('../models/refugee')
+const RefugeeUser = require('../models/refugee')
+const PatronUser = require('../models/patron')
+// const request = require('../models/req')
 
 const router = express.Router();
 const bodyparser=require('body-parser');
@@ -21,9 +24,59 @@ router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
   });
 
-  router.get('/refugeeForm',(req,res)=>{
+    // When the New Refugee form is visited
+    router.get('/refugeeForm',(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
+
+
+  // When the SUBMIT button on the new refugee form is hit.
+    router.post('/refugeeForm', (req, res)=>{
+    let newRefugeeUser = new RefugeeUser({
+
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        age: req.body.age,
+        gender: req.body.age,
+        govID: req.body.govID,
+        phone_number: req.body.phone_number,
+        email: req.body.email,
+        home_address:{ street: req.body.street,
+        locality: req.body.locality, city: req.body.city, zip: req.body.zip}
+
+    })
+
+        newRefugeeUser.save()
+        .then(res.redirect('/ngo_view'))
+    })
+
+
+    // When the Patron form is visited
+    router.get('/patronForm',(req,res)=>{
+        res.render('patronForm.ejs')
+      });
+
+      router.get('/refugeeRequestForm',(req,res)=>{
+          res.render('refugeeRequestForm.ejs')
+        });
+
+    // When the SUBMIT button on the new Patron form is hit.
+    router.post('/patronForm',(req,res)=>{
+    let newPatronUser = new PatronUser({
+        name: req.body.firstname + req.body.lastname,
+        phone_number: req.body.phone_number,
+        email: req.body.email,
+        address: req.body.street + " "
+        + req.body.locality + " " +
+        req.body.city + " " + req.body.zip,
+        password: "Patron@1234"
+
+      })
+
+        newPatronUser.save()
+        .then(res.redirect('/ngo_view'))
+    })
+
 
 router.get('/ngo_view',(req,res)=>{
   Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(ngouser_id)}).lean().then(async (requests)=>{
@@ -45,12 +98,20 @@ router.get('/ngo_view',(req,res)=>{
 
 
 router.post('/getPatrons',(req,res)=>{
+
     res.json({"patrons" : 2})
 })
 
 router.post('/getPatronDetails',(req,res)=>{
     res.json({"name" : 'lolaboy'})
 })
+
+router.get('/findPeople',(req,res)=>{
+
+    res.render('findPeople.ejs',{"matching_data" : ['koushik','dsk','sashank']})
+})  
+
+
 
 
 
@@ -61,9 +122,10 @@ router.post('/addNewRefugee', (req, res)=>{
 
 router.get('/newRefugeeForm', (req,res)=>{
     res.render('ngo.view.ejs',{"refugee_requests" : 5})
-}) 
+})
 
-//Manually add new GMU. 
+
+//Manually add new GMU.
 router.get('/addNewNGO',(req,res)=>{
     let newNGOUser = new NGOUser({
         name: 'WeLovePeace',
@@ -79,7 +141,16 @@ router.get('/addNewNGO',(req,res)=>{
 
 // END OF ADD NEW NGO.
 
-
+router.post('/getRefugees', (req, res)=> {
+      res.json({'data':[{
+        firstname: "Mac",
+        lastname: "Harris",
+      },
+    {
+      firstname: "John",
+      lastname: "Harris",
+    }]})
+  });
 
   module.exports = router;
 
