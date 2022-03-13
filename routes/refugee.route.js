@@ -19,7 +19,11 @@ router.get('/hello',(req,res)=>{
   router.get('/refugeeForm',(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
-    
+
+    router.get('/patronForm',(req,res)=>{
+        res.render('patronForm.ejs')
+      });
+
 router.get('/ngo_view',(req,res)=>{
 
 
@@ -44,9 +48,9 @@ router.post('/addNewRefugee', (req, res)=>{
 
 router.get('/newRefugeeForm', (req,res)=>{
     res.render('ngo.view.ejs',{"refugee_requests" : 5})
-}) 
+})
 
-//Manually add new GMU. 
+//Manually add new GMU.
 router.get('/addNewNGO',(req,res)=>{
     let newNGOUser = new NGOUser({
         name: 'WeLovePeace',
