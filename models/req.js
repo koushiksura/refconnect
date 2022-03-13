@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const patron = require('./patron');
 const refugee = require('./refugee')
+const ngouser = require('./ngouser')
 
 const ReqSchema = new mongoose.Schema({
+    NgoId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : ngouser
+    },
     refugees : {
         type : [
             {
