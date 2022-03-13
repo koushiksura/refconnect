@@ -23,6 +23,10 @@ const ReqSchema = new mongoose.Schema({
     assigned : {
         type : mongoose.Schema.Types.ObjectId,
         ref : patron
+    },
+    time : {
+        type : Date,
+        default : Date.now
     }
 });
 
