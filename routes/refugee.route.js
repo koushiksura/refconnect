@@ -24,7 +24,7 @@ var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
 const wellKnown = require('nodemailer/lib/well-known');
 
-const PatronOffer = require('../models/patronoffer.js');
+
 const { request } = require('http');
 
 const { response } = require('express');
