@@ -12,10 +12,10 @@ const server = http.createServer(app);
 
 // app.use(expressLayouts);
 app.set('view engine','ejs');
-// app.use(express.static('./static'));
+app.use(express.static('./static'));
 app.use('/uploads', express.static('./uploads'))
 app.use(express.static('./uploads'));
-// app.use('/styles', express.static('styles'))
+//app.use('/styles', express.static('styles'))
 
 mongoose.connect('mongodb+srv://refugee:test123@cluster0.uxmhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{   useNewUrlParser: true,
     useUnifiedTopology: true
@@ -52,17 +52,17 @@ app.use(urlencodedparser);
       cb(null, file.originalname + Date.now()+ '.jpeg' )
     }
   })
-  
-  
+
+
   app.use('/',require('./routes/refugee.route'));
 
 
   app.use(multer({ storage: storage }).any());
-  // app.get("*", function(req, res){
-  //   res.render('error');
-  // });
-  
+//   app.get("*", function(req, res){
+//     res.render('error');
+//   });
+
    server.listen(8000, function(){
      console.log("Connected to server")
    });
-  console.log('you are listening to port 8000');  
+  console.log('you are listening to port 8000');
