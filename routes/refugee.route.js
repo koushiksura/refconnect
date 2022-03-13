@@ -87,7 +87,7 @@ router.get('/hello',(req,res)=>{
       })
 
         newPatronUser.save()
-        .then(res.redirect('/ngo_view'))
+        .then(res.redirect('/patronOfferForm'))
     })
 
 
@@ -336,6 +336,27 @@ router.post('/getRefugees', (req, res)=> {
     res.render('patronOfferForm.ejs')
   });
 
+  router.post('/patronOfferForm',async (req,res)=>{
+    console.log(req.body)
+    
+      let patronoff = new PatronOffer({
+        patronID:new mongoose.Types.ObjectId('622d7b6cc5c83d313e74fb7e'),
+        noPeople:req.body.age,
+        addressOfAccomodation : {
+          street:req.body.street,
+          locality:req.body.locality,
+          city:req.body.city,
+          zip:req.body.zip
+        }
+      })
+      await patronoff.save().then(()=>{
+        console.log("save successfull.")
+        
+      })
+
+      res.redirect('/patronOfferForm')
+  
+  })
 
 
 router.get('/addNewPatronOffer', (req, res)=>{
