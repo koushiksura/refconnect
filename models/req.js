@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 const patron = require('./patron');
+const refugee = require('./refugee')
 
 const ReqSchema = new mongoose.Schema({
     refugees : {
-        type : [],
+        type : [
+            {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : refugee
+            }
+        ],
         required : true,
     },
     numofppl : {
