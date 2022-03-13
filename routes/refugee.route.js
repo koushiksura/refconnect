@@ -4,12 +4,16 @@ const { check, validationResult } = require('express-validator');
 
 const mongoose = require('mongoose')
 const NGOUser = require('../models/ngouser')
+const Refugeerequest = require('../models/req')
+const Refugee = require('../models/refugee')
 const RefugeeUser = require('../models/refugee')
 const PatronUser = require('../models/patron')
+
 const PatronOffer = require('../models/patronoffer.js')
 
 // Searching module
 const MiniSearch = require('minisearch')
+
 
 
 // const request = require('../models/req')
@@ -17,8 +21,17 @@ const MiniSearch = require('minisearch')
 const router = express.Router();
 const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
+const { findById } = require('../models/ngouser');
+const wellKnown = require('nodemailer/lib/well-known');
+
+const PatronOffer = require('../models/patronoffer.js');
+const { request } = require('http');
+
+const { response } = require('express');
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
+
+ngouser_id = '622d5aa13b43b65219d17e80'
 
 router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
@@ -49,12 +62,16 @@ router.get('/hello',(req,res)=>{
         newRefugeeUser.save()
         .then(res.redirect('/ngo_view'))
     })
-    
+
 
     // When the Patron form is visited
     router.get('/patronForm',(req,res)=>{
         res.render('patronForm.ejs')
       });
+
+      router.get('/refugeeRequestForm',(req,res)=>{
+          res.render('refugeeRequestForm.ejs')
+        });
 
     // When the SUBMIT button on the new Patron form is hit.
     router.post('/patronForm',(req,res)=>{
@@ -62,8 +79,8 @@ router.get('/hello',(req,res)=>{
         name: req.body.firstname + req.body.lastname,
         phone_number: req.body.phone_number,
         email: req.body.email,
-        address: req.body.street + " " 
-        + req.body.locality + " " + 
+        address: req.body.street + " "
+        + req.body.locality + " " +
         req.body.city + " " + req.body.zip,
         password: "Patron@1234"
 
@@ -76,23 +93,70 @@ router.get('/hello',(req,res)=>{
 
 router.get('/ngo_view',(req,res)=>{
 
-    res.render('ngo.view.ejs',{"refugee_requests" : 5})
+  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(ngouser_id)}).lean().then(async (requests)=>{
+      for (let  i = 0; i < requests.length;i++){
+        const each_names = [];
+        requests[i].names = [];
+        for(let j = 0; j < requests[i].refugees.length;j++){
+          var string_id  = String((requests[i].refugees[j]).valueOf())
+          await Refugee.findById(string_id).then((res)=>{
+          each_names.push(res.firstname.concat(" ",res.lastname))
+          })
+        }
+        requests[i].names = each_names
+        const date1 = new Date(requests[i].time);
+        const date2 = new Date();
+        if (date2 < date1) {
+            date2.setDate(date2.getDate() + 1);
+        }
+        
+        var diff = date2 - date1;
+        var msec = diff;
+        var hh = Math.floor(msec / 1000 / 60 / 60);        
+        requests[i].time = hh;
+      }
+      res.render( 'ngo.view.ejs' , { refugee_requests : requests} )
+  })
+
 })
+
 
 router.post('/getPatrons',(req,res)=>{
 
-
-
-
-    res.json({"patrons" : 2})
+    // console.log(Number(req.body.totalPeople))
+    patronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
+        console.log("lol")
+        for (var i = 0;i < response.length;i++){
+            await PatronUser.findOne({"id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+                response[i].name = res1.name;
+            })
+        }
+        console.log(response)
+        res.json({"patrons":response})
+    })
+    // console.log("lol")
+    // console.log(response)
+    
 })
 
 router.post('/getPatronDetails',(req,res)=>{
+  const Id  = req.body.Id;
+  PatronOffer.find({_id : Id}).lean().then(async (offer_details) => {
+    await PatronUser.findById(offer_details.patronID).then((patron_details)=>{
+      offer_details.name = patron_details.name;
+      offer_details.phone_number = patron_details.phone_number;
+      offer_details.email = patron_details.email;
+    })
+    res.json({"patron_details" : patron_details})
+  })
 
-
-
-    res.json({"name" : 'lolaboy'})
 })
+
+router.get('/findPeople',(req,res)=>{
+
+    res.render('findPeople.ejs',{"matching_data" : ['koushik','dsk','sashank']})
+})
+
 
 
 // Used to display Refugee Request Registration
@@ -252,7 +316,21 @@ router.get('/addNewNGO',(req,res)=>{
 
 // END OF ADD NEW NGO.
 
+router.post('/getRefugees', (req, res)=> {
+      res.json({'data':[{
+        firstname: "Mac",
+        lastname: "Harris",
+      },
+    {
+      firstname: "John",
+      lastname: "Harris",
+    }]})
+  });
 
+  // When the New Refugee form is visited
+  router.get('/patronOfferForm',(req,res)=>{
+    res.render('patronOfferForm.ejs')
+  });
 
 
 
