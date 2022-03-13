@@ -12,5 +12,9 @@ router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
   });
 
+  router.get('/refugeeForm',(req,res)=>{
+      res.render('refugeeFormTemplate.ejs')
+    });
+
 
   module.exports = router;
