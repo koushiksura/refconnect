@@ -133,7 +133,7 @@ router.post('/getPatronDetails',(req,res)=>{
 router.get('/findPeople',(req,res)=>{
 
     res.render('findPeople.ejs',{"matching_data" : ['koushik','dsk','sashank']})
-})  
+})
 
 
 
@@ -174,6 +174,11 @@ router.post('/getRefugees', (req, res)=> {
       firstname: "John",
       lastname: "Harris",
     }]})
+  });
+
+  // When the New Refugee form is visited
+  router.get('/patronOfferForm',(req,res)=>{
+    res.render('patronOfferForm.ejs')
   });
 
   module.exports = router;
