@@ -124,7 +124,7 @@ router.get('/ngo_view',(req,res)=>{
 router.post('/getPatrons',(req,res)=>{
 
     // console.log(Number(req.body.totalPeople))
-    patronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
+    PatronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
         console.log("lol")
         for (var i = 0;i < response.length;i++){
             await PatronUser.findOne({"id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
