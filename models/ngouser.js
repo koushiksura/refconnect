@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
             required : true,
             maxlength : 7
         }
-    }
+    },
 
 });
 

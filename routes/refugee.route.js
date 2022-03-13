@@ -21,6 +21,7 @@ router.get('/hello',(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
 
+
   // When the SUBMIT button on the new refugee form is hit.
 router.post('/refugeeForm', (req, res)=>{
     let newRefugeeUser = new RefugeeUser({
@@ -42,6 +43,12 @@ router.post('/refugeeForm', (req, res)=>{
 .then(res.redirect('/ngo_view'))
 })
     
+
+    router.get('/patronForm',(req,res)=>{
+        res.render('patronForm.ejs')
+      });
+
+
 router.get('/ngo_view',(req,res)=>{
 
 
@@ -58,11 +65,19 @@ router.post('/getPatronDetails',(req,res)=>{
 })
 
 
-// router.get('/newRefugeeForm', (req,res)=>{
-//     res.render('ngo.view.ejs',{"refugee_requests" : 5})
-// }) 
 
-//Manually add new GMU. 
+
+// When the SUBMIT button on the new refugee form is hit.
+router.post('/addNewRefugee', (req, res)=>{
+    console.log(req.body)
+})
+
+router.get('/newRefugeeForm', (req,res)=>{
+    res.render('ngo.view.ejs',{"refugee_requests" : 5})
+})
+
+
+//Manually add new GMU.
 router.get('/addNewNGO',(req,res)=>{
     let newNGOUser = new NGOUser({
         name: 'WeLovePeace',
