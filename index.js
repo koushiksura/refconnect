@@ -58,9 +58,9 @@ app.use(urlencodedparser);
 
 
   app.use(multer({ storage: storage }).any());
-  app.get("*", function(req, res){
-    res.render('error');
-  });
+//   app.get("*", function(req, res){
+//     res.render('error');
+//   });
   
    server.listen(8000, function(){
      console.log("Connected to server")
