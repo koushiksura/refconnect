@@ -1225,7 +1225,7 @@
          </div>
          <div style="display: flex;height: 2.5rem; margin-bottom: 1rem;padding: 0px 24px;" >
             <button style="margin-left: auto;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button" onclick="findPeople()"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-6m0tds" aria-hidden="true">add</span>&nbsp; Find People<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
-            <button style="margin-left: 1rem;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-6m0tds" aria-hidden="true">add</span>&nbsp; Add Refugee<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
+            <button style="margin-left: 1rem;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button" onclick="addRefugee()"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-6m0tds" aria-hidden="true">add</span>&nbsp; Add Refugee<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
             <button style="margin-left: 1rem;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-6m0tds" aria-hidden="true">add</span>&nbsp; Create Request<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
         </div>
          <div style="display: flex;height: calc(100vh - 19.5rem); margin-bottom: 1rem; padding: 0px 24px;gap: 1rem;">
@@ -1326,6 +1326,10 @@ function getPatronDetails(){
 
 function findPeople(){
     window.location.href = '/findPeople'
+}
+
+function addRefugee(){
+    window.location.href = '/refugeeForm'
 }
    </script>
 </html>
