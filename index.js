@@ -17,7 +17,7 @@ app.use('/uploads', express.static('./uploads'))
 app.use(express.static('./uploads'));
 //app.use('/styles', express.static('styles'))
 
-mongoose.connect('mongodb+srv://refugee:test123@cluster0.uxmhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{   useNewUrlParser: true,
+mongoose.connect('mongodb+srv://refugee:@cluster0.uxmhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{   useNewUrlParser: true,
     useUnifiedTopology: true
   })
 .then(()=>console.log('connected to mongodb'))
