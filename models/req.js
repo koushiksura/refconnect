@@ -15,7 +15,7 @@ const ReqSchema = new mongoose.Schema({
         required : true
     },
     assigned : {
-        type : Schema.Types.ObjectId,
+        type : mongoose.Schema.Types.ObjectId,
         ref : patron
     }
 });
