@@ -1232,19 +1232,19 @@
             <div style="display: flex;flex-direction: column;flex-basis: 30vw;overflow-y: auto;">
                 <% for(i=0;i < refugee_requests.length;i++ ){ %>
                 <div class="MuiBox-root css-k55ac4">
-                    <span class="MuiBadge-root css-1jjdjtk"><span class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-1thnnqk">errors</span></span>
-                    <div class="MuiBox-root css-1w58niz">
-                       <p class="MuiTypography-root MuiTypography-body2 css-10hksn" onclick = "getPatrons()"></p>
+                    <span class="MuiBadge-root css-1jjdjtk"><span class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-1thnnqk">Refugee Requests</span></span>
+                    <div class="MuiBox-root css-1w58niz" onclick = "getPatrons('<%=refugee_requests[i].names.length%>')">
+                        <% for(j=0;j < refugee_requests[i].names.length;j++){%>
+                       <p class="MuiTypography-root MuiTypography-body2 css-10hksn" ><%=refugee_requests[i].names[j]%></p>
+                       <%}%>
                     </div>
                     <div class="MuiBox-root css-1dyncq9">
                        <div class="MuiBox-root css-1f8ulux">
-                          <p class="MuiTypography-root MuiTypography-body2 css-46m89"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-kyh2wa" aria-hidden="true">attach_file</span></p>
-                          <span class="MuiTypography-root MuiTypography-button css-v4qhfh">&nbsp;9</span>
+                        <p class="MuiTypography-root MuiTypography-body2 css-10hksn" ><b>Num of People:</b> <%=refugee_requests[i].numofppl%></p>
                        </div>
-                       <div class="MuiBox-root css-12dubtd">
-                          <div class="MuiAvatar-root MuiAvatar-circular css-6nbtop"><img alt="image-0" src="https://demos.creative-tim.com/material-dashboard-pro-react/static/media/team-2.13ae2ce3e12f4cfed420.jpg" class="MuiAvatar-img css-u226zh"></div>
-                          <div class="MuiAvatar-root MuiAvatar-circular css-6nbtop"><img alt="image-1" src="https://demos.creative-tim.com/material-dashboard-pro-react/static/media/team-3.0ef0be95e6850814c79e.jpg" class="MuiAvatar-img css-u226zh"></div>
-                       </div>
+                       <div class="MuiBox-root css-12dubtd" style="font-size: 14px;">
+                        <%=refugee_requests[i].time%> hrs ago.
+                                                </div>
                     </div>
                  </div>
                  <%}%>
@@ -1261,26 +1261,27 @@
    </body>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
    <script>
-       function getPatrons(){
+       function getPatrons(totalp){
+           console.log(totalp)
        $.ajax({
         type:'POST',
         url:'/getPatrons',
         data:{
-          news:1,
+          totalPeople:totalp,
         },
         success:function(data){
+            document.getElementById("PatronsBox").innerHTML = ""
             console.log(data)
-            for(var i = 0; i < data.patrons; i++){
+            for(var i = 0; i < data.patrons.length; i++){
             document.getElementById("PatronsBox").innerHTML+=`
             <div class="MuiBox-root css-k55ac4">
-                        <span class="MuiBadge-root css-1jjdjtk"><span class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-1thnnqk">errors</span></span>
+                        <span class="MuiBadge-root css-1jjdjtk" ><span style="background:linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));" class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-1thnnqk">errors</span></span>
                         <div class="MuiBox-root css-1w58niz">
-                           <p class="MuiTypography-root MuiTypography-body2 css-10hksn" onclick="getPatronDetails()">Fix firefox errors</p>
+                           <p class="MuiTypography-root MuiTypography-body2 css-10hksn" onclick="getPatronDetails()">`+ data.patrons[i].name  + `</p>
                         </div>
                         <div class="MuiBox-root css-1dyncq9">
                            <div class="MuiBox-root css-1f8ulux">
-                              <p class="MuiTypography-root MuiTypography-body2 css-46m89"><span class="material-icons-round notranslate MuiIcon-root MuiIcon-fontSizeInherit css-kyh2wa" aria-hidden="true">attach_file</span></p>
-                              <span class="MuiTypography-root MuiTypography-button css-v4qhfh">&nbsp;9</span>
+                              <p class="MuiTypography-root MuiTypography-body2 css-46m89"> <b>Location: </b>`+ data.patrons[i].addressOfAccomodation.city +`</p>
                            </div>
                            <div class="MuiBox-root css-12dubtd">
                               <div class="MuiAvatar-root MuiAvatar-circular css-6nbtop"><img alt="image-0" src="https://demos.creative-tim.com/material-dashboard-pro-react/static/media/team-2.13ae2ce3e12f4cfed420.jpg" class="MuiAvatar-img css-u226zh"></div>

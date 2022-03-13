@@ -8,6 +8,7 @@ const Refugeerequest = require('../models/req')
 const Refugee = require('../models/refugee')
 const RefugeeUser = require('../models/refugee')
 const PatronUser = require('../models/patron')
+const patronOffer = require('../models/patronoffer.js.js')
 // const request = require('../models/req')
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
 const wellKnown = require('nodemailer/lib/well-known');
+const { response } = require('express');
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
 
@@ -90,6 +92,16 @@ router.get('/ngo_view',(req,res)=>{
           })
         }
         requests[i].names = each_names
+        const date1 = new Date(requests[i].time);
+        const date2 = new Date();
+        if (date2 < date1) {
+            date2.setDate(date2.getDate() + 1);
+        }
+        
+        var diff = date2 - date1;
+        var msec = diff;
+        var hh = Math.floor(msec / 1000 / 60 / 60);        
+        requests[i].time = hh;
       }
       console.log(requests)
       res.render( 'ngo.view.ejs' , { refugee_requests : requests} )
@@ -98,8 +110,20 @@ router.get('/ngo_view',(req,res)=>{
 
 
 router.post('/getPatrons',(req,res)=>{
-
-    res.json({"patrons" : 2})
+    // console.log(Number(req.body.totalPeople))
+    patronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
+        console.log("lol")
+        for (var i = 0;i < response.length;i++){
+            await PatronUser.findOne({"id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+                response[i].name = res1.name;
+            })
+        }
+        console.log(response)
+        res.json({"patrons":response})
+    })
+    // console.log("lol")
+    // console.log(response)
+    
 })
 
 router.post('/getPatronDetails',(req,res)=>{
