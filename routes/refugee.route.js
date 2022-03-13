@@ -73,6 +73,12 @@ router.get('/hello',(req,res)=>{
           res.render('refugeeRequestForm.ejs')
         });
 
+      router.post('/newRefugeeRequestRegistration',(req,res)=>{
+        console.log(req.body)
+        res.redirect('/ngo_view')
+        
+      })  
+
     // When the SUBMIT button on the new Patron form is hit.
     router.post('/patronForm',(req,res)=>{
     let newPatronUser = new PatronUser({

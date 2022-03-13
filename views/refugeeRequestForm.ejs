@@ -370,7 +370,7 @@
 
 
     function addRefugees(firstname, lastname){
-      refugeesInForm.push({firstnamne:JSON.stringify(firstname), lastname:JSON.stringify(lastname)});
+      refugeesInForm.push({firstnamne:JSON.stringify(firstname).substring(3,JSON.stringify(firstname).length-1), lastname:JSON.stringify(lastname).substring(1,JSON.stringify(firstname).length)});
       console.log(refugeesInForm);
       document.getElementById("refugeeTable").innerHTML+=
       `<thead class="MuiBox-root css-1ircn5c">
