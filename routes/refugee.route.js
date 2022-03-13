@@ -8,7 +8,14 @@ const Refugeerequest = require('../models/req')
 const Refugee = require('../models/refugee')
 const RefugeeUser = require('../models/refugee')
 const PatronUser = require('../models/patron')
-const patronOffer = require('../models/patronoffer.js.js')
+
+const PatronOffer = require('../models/patronoffer.js')
+
+// Searching module
+const MiniSearch = require('minisearch')
+
+
+
 // const request = require('../models/req')
 
 const router = express.Router();
@@ -17,7 +24,7 @@ var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
 const wellKnown = require('nodemailer/lib/well-known');
 
-const PatronOffer = require('../models/patronoffer.js');
+
 const { request } = require('http');
 
 const { response } = require('express');
@@ -85,6 +92,7 @@ router.get('/hello',(req,res)=>{
 
 
 router.get('/ngo_view',(req,res)=>{
+
   Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(ngouser_id)}).lean().then(async (requests)=>{
       for (let  i = 0; i < requests.length;i++){
         const each_names = [];
@@ -109,15 +117,18 @@ router.get('/ngo_view',(req,res)=>{
       }
       res.render( 'ngo.view.ejs' , { refugee_requests : requests} )
   })
+
 })
 
 
 router.post('/getPatrons',(req,res)=>{
+
     // console.log(Number(req.body.totalPeople))
-    patronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
+    PatronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
         console.log("lol")
         for (var i = 0;i < response.length;i++){
-            await PatronUser.findOne({"id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+            await PatronUser.findOne({"_id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
+                console.log(res1)
                 response[i].name = res1.name;
             })
         }
@@ -152,15 +163,144 @@ router.get('/findPeople',(req,res)=>{
 
 
 
+// Used to display Refugee Request Registration
+router.get('/newRefugeeRequestRegistration', (res, req)=>{
+    res.render('refugeeRequestForm.ejs')
+})
+
+
+// Used by 'RefugeeRequest' module
+router.post('/searchRefugeesbyName', (req, res)=>{
+RefugeeUser.find({}, function(err,findresults){
+    if(err){
+      console.log(err);
+    }
+    else{
+          let miniSearch = new MiniSearch({
+          fields: ['firstname', 'lastname'], // fields to index for full-text search
+          storeFields: ['_id','firstname', 'lastname'] // fields to return with search results
+        })
+
+          miniSearch.addAll(findresults)
+
+          let results = miniSearch.search(req.body.searchkeyword)
+
+          res.json({'data': results})
+      }
+})
+})
 
 
 // When the SUBMIT button on the new refugee form is hit.
-router.post('/addNewRefugee', (req, res)=>{
-    console.log(req.body)
+// router.post('/addNewRefugee', (req, res)=>{
+//     console.log(req.body)
+// })
+
+// router.get('/newRefugeeForm', (req,res)=>{
+//     res.render('ngo.view.ejs',{"refugee_requests" : 5})
+// })
+
+
+//Find loved one's module
+
+router.get('/findLoved',  (req, res)=> {
+
+    var resultList = []
+
+    refugeeFirstName = "Alec"
+    refugeeLastName = "Thompson"
+
+    RefugeeUser.find({firstname: refugeeFirstName, 
+        lastname: refugeeLastName}, async function(err,findresults){
+    if(err){
+      console.log(err);
+    }
+
+    else{
+
+        searchLastName =  findresults[0].lastname
+        searchStreet = findresults[0].home_address.street
+        searchLocality = findresults[0].home_address.locality
+
+        var search1Criteria = [searchLastName, searchStreet, searchLocality]
+        var search2Criteria = ["lastname", "home_address.street","home_address.locality"]
+
+        // RefugeeUser.find({'lastname': searchLastName}, function(err, findresults){
+
+        //     if(err){
+        //         console.log(err)
+        //     }
+        //     else{
+
+        //         for (var i = 0; i < findresults; i++) {
+        //             resultList.push(findresults[i]._id)                
+        //             }
+
+        //     }
+        //     });
+
+
+        // RefugeeUser.find({'home_address.street': searchStreet}, function(err, findresults){
+
+        //     if(err){
+        //         console.log(err)
+        //     }
+        //     else{
+
+        //         console.log("H")
+
+        //         for (var i = 0; i < findresults; i++) {
+        //             resultList.push(findresults[i]._id)                
+        //             }
+
+        //     }
+        //     });
+
+
+        // RefugeeUser.find({'home_address.locality': searchLocality}, function(err, findresults){
+
+        //     if(err){
+        //         console.log(err)
+        //     }
+        //     else{
+
+        //         for (var i = 0; i < findresults; i++) {
+        //             resultList.push(findresults[i]._id)                
+        //             }
+
+        //     }
+        //     });
+
+
+        // console.log(resultList)
+
+        for (var k = 0; k < search2Criteria.length; k++) {
+            let temp1 = search2Criteria[k];
+            let temp2 = search1Criteria[k];
+            console.log(temp1, temp2)
+       await RefugeeUser.find({temp1: temp2}, function(err, findresults){
+
+            if(err){
+                console.log(err)
+            }
+            else{
+                console.log(findresults)
+                for (var i = 0; i < findresults.length; i++) {
+                    console.log(findresults[i])
+                    resultList.push(findresults[i])                
+                    }
+                    console.log(resultList)
+
+            }
+            })
+
+        
+
+    }
+
+    }
 })
 
-router.get('/newRefugeeForm', (req,res)=>{
-    res.render('ngo.view.ejs',{"refugee_requests" : 5})
 })
 
 
@@ -195,6 +335,24 @@ router.post('/getRefugees', (req, res)=> {
   router.get('/patronOfferForm',(req,res)=>{
     res.render('patronOfferForm.ejs')
   });
+
+
+
+router.get('/addNewPatronOffer', (req, res)=>{
+    let newPatronOffer = new PatronOffer({
+        patronID: mongoose.Types.ObjectId("622d7b6cc5c83d313e74fb7e"),
+        noPeople: 2,
+        addressOfAccomodation:{ street: 'Merke Hurt Road',
+        locality: 'Nicht Traurig', city: 'Berlin', zip: '120745'}
+
+})
+
+        newPatronOffer.save()
+.then(console.log("SAVED!"))
+})
+
+
+
 
   module.exports = router;
 
