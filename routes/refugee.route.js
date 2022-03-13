@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator');
 
 const mongoose = require('mongoose')
 const NGOUser = require('../models/ngouser')
+const RefugeeUser = require('../models/refugee')
 // const request = require('../models/req')
 
 const router = express.Router();
@@ -19,6 +20,27 @@ router.get('/hello',(req,res)=>{
   router.get('/refugeeForm',(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
+
+  // When the SUBMIT button on the new refugee form is hit.
+router.post('/refugeeForm', (req, res)=>{
+    let newRefugeeUser = new RefugeeUser({
+
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        age: req.body.age,
+        gender: req.body.age,
+        govID: req.body.govID,
+        phone_number: 9889889889,
+        email: 'welovepeace@go.com',
+        home_address:{ street: req.body.street,
+        locality: req.body.locality, city: req.body.city, zip: req.body.zip}
+
+    })
+
+
+    newRefugeeUser.save()
+.then(res.redirect('/ngo_view'))
+})
     
 router.get('/ngo_view',(req,res)=>{
 
@@ -36,15 +58,9 @@ router.post('/getPatronDetails',(req,res)=>{
 })
 
 
-
-// When the SUBMIT button on the new refugee form is hit.
-router.post('/addNewRefugee', (req, res)=>{
-    console.log(req.body)
-})
-
-router.get('/newRefugeeForm', (req,res)=>{
-    res.render('ngo.view.ejs',{"refugee_requests" : 5})
-}) 
+// router.get('/newRefugeeForm', (req,res)=>{
+//     res.render('ngo.view.ejs',{"refugee_requests" : 5})
+// }) 
 
 //Manually add new GMU. 
 router.get('/addNewNGO',(req,res)=>{
