@@ -24,6 +24,10 @@ router.get('/hello',(req,res)=>{
         res.render('patronForm.ejs')
       });
 
+      router.get('/refugeeRequestForm',(req,res)=>{
+          res.render('refugeeRequestForm.ejs')
+        });
+
 router.get('/ngo_view',(req,res)=>{
 
 
@@ -66,7 +70,22 @@ router.get('/addNewNGO',(req,res)=>{
 
 // END OF ADD NEW NGO.
 
-
+router.post('/getRefugees', (req, res)=> {
+    return new Refugees[{
+      firstname: "Mac",
+      lastname: "Harris",
+      email: 'welovepeace@go.com',
+      address:{ street: 'Shein Kutler Road',
+      locality: 'Meine glucklish', city: 'Berlin', zip: '120728'}
+    },
+    {
+      firstname: "John",
+      lastname: "Harris",
+      email: 'welovepeace@go.com',
+      address:{ street: 'Shein Kutler Road',
+      locality: 'Meine glucklish', city: 'Berlin', zip: '120728'}
+    }]
+  });
 
   module.exports = router;
 
