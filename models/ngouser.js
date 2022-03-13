@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema({
             required : true,
             maxlength : 7
         }
+    },
+    time : {
+        type : Date,
+        default : Date.now
     }
 
 });
