@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const PatronSchema = new mongoose.Schema({
 	name: {
 		type:String,
-		required:true,
+		//required:true,
 		lowercase:true
 	},
 
@@ -14,13 +14,13 @@ const PatronSchema = new mongoose.Schema({
 
 	phone_number: {
 		type:String,
-		required:true,
+		//required:true,
 		maxlength:11,
 	},
 
 	address: {
 		type:String,
-		required:true
+		//required:true
 	},
 
 	password:{

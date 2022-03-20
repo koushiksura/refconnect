@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/sakshi35/refconnect#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
@@ -31,6 +32,8 @@
     "minisearch": "^4.0.3",
     "mongoose": "^5.10.0",
     "multer": "^1.4.4",
-    "nodemailer": "^6.7.2"
+    "nodemailer": "^6.7.2",
+    "passport": "^0.5.2",
+    "passport-custom": "^1.1.1"
   }
 }

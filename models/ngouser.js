@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     name : {
         type : String,
-        required : true,
+        //required : true,
         lowercase : true
     },
     phone_number: {
         type : String,
-        required : true,
+        //required : true,
         maxlength : 11
     },
     email : {
@@ -22,22 +22,22 @@ const UserSchema = new mongoose.Schema({
     address : {
         street : {
             type : String,
-            required : true,
+            //required : true,
             lowercase : true,
         },
         locality : {
             type : String,
-            required : true,
+           // required : true,
             lowercase : true
         },
         city : {
             type : String,
-            required : true,
+           // required : true,
             lowercase : true
         },
         zip : {
             type : Number,
-            required : true,
+           // required : true,
             maxlength : 7
         }
     },

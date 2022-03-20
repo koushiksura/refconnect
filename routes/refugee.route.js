@@ -22,7 +22,7 @@ const router = express.Router();
 const bodyparser=require('body-parser');
 var nodemailer = require('nodemailer');
 const { findById } = require('../models/ngouser');
-const wellKnown = require('nodemailer/lib/well-known');
+
 
 
 const { request } = require('http');
@@ -31,7 +31,7 @@ const { response } = require('express');
 var urlencodedparser=bodyparser.urlencoded({extended:false});
 bodyParser = require('body-parser').json();
 
-ngouser_id = '622d5aa13b43b65219d17e80'
+// ngouser_id = '622d5aa13b43b65219d17e80'
 
 router.get('/hello',(req,res)=>{
     res.render('helloworld.ejs')
@@ -98,8 +98,8 @@ router.get('/hello',(req,res)=>{
 
 
 router.get('/ngo_view',(req,res)=>{
-
-  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(ngouser_id)}).lean().then(async (requests)=>{
+console.log(req.user)
+  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(req.user._id)}).lean().then(async (requests)=>{
       for (let  i = 0; i < requests.length;i++){
         const each_names = [];
         requests[i].names = [];
