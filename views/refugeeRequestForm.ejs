@@ -313,7 +313,7 @@
    </head>
    <body>
    <label data-shrink="false" for="mui-1" id="mui-1-label" class="search_label">Search here</label>
-    <input list="refugeeLists" aria-invalid="false" class="search_bar" type="text" value="" id="searchRefugees" onkeypress="getRefugees(this.value)">
+    <input list="refugeeLists" aria-invalid="false" class="search_bar" type="text" value="" id="searchRefugees" onkeyup="getRefugees(this.value)">
     <datalist id="refugeeLists">
     </datalist>
     <div class="MuiBox-root css-1fvfpv2">
@@ -342,8 +342,8 @@
     var isInputEvent = (Object.prototype.toString.call(e).indexOf("searchBox") > -1);
     if(!isInputEvent)
         console.log("fullname: "+e.target.value);
-        var names = JSON.stringify(e.target.value).split(',');
-        console.log("names[0]: "+names[0]+" names[1]: "+names[1]);
+        var names = e.target.value.split(',');
+        console.log(names);
         addRefugees(names[0], names[1], e.target.class);
     }, false);
 
@@ -370,7 +370,7 @@
 
 
     function addRefugees(firstname, lastname){
-      refugeesInForm.push({firstnamne:JSON.stringify(firstname).substring(3,JSON.stringify(firstname).length-1), lastname:JSON.stringify(lastname).substring(1,JSON.stringify(firstname).length)});
+      refugeesInForm.push({firstnamne:firstname, lastname:lastname});
       console.log(refugeesInForm);
       document.getElementById("refugeeTable").innerHTML+=
       `<thead class="MuiBox-root css-1ircn5c">

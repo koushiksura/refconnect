@@ -75,6 +75,9 @@ router.get('/hello',(req,res)=>{
 
       router.post('/newRefugeeRequestRegistration',(req,res)=>{
         console.log(req.body)
+        let refugee_req = new Refugeerequest({
+          
+        })
         res.redirect('/ngo_view')
         
       })  
@@ -327,14 +330,24 @@ router.get('/addNewNGO',(req,res)=>{
 // END OF ADD NEW NGO.
 
 router.post('/getRefugees', (req, res)=> {
-      res.json({'data':[{
-        firstname: "Mac",
-        lastname: "Harris",
-      },
-    {
-      firstname: "John",
-      lastname: "Harris",
-    }]})
+
+    Refugee.find({}).then((refs)=>{
+        let miniSearch = new MiniSearch({
+            fields: ['firstname', 'lastname'], // fields to index for full-text search
+            storeFields: ['_id','firstname', 'lastname'], // fields to return with search results
+            searchOptions:{
+              fuzzy:0.4,
+              prefix:true
+                          } 
+        })
+        miniSearch.addAll(refs)
+        console.log(req.body["searchKeyWord"])
+        let results = miniSearch.search(req.body["searchKeyWord"])
+        console.log(results)
+        res.json({'data': results})
+    
+    })
+      
   });
 
   // When the New Refugee form is visited

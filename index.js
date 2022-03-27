@@ -19,7 +19,7 @@ app.use('/uploads', express.static('./uploads'))
 app.use(express.static('./uploads'));
 //app.use('/styles', express.static('styles'))
 
-mongoose.connect('mongodb+srv://refugee:@cluster0.uxmhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{   useNewUrlParser: true,
+mongoose.connect('mongodb://hackathon-eleos:Awit3rJev4oBiVRZCVb22SO0sOuc5xVjIwggfBjl3iw9IEoI9DF1hlJav8CQChS78qoJlanqLdDYHxHPTYrLCw==@hackathon-eleos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@hackathon-eleos@',{   useNewUrlParser: true,
     useUnifiedTopology: true
   })
 .then(()=>console.log('connected to mongodb'))
