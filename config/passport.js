@@ -69,14 +69,15 @@ passport.deserializeUser(function(id, done) {
   usertype=id.split(',')[1]
   id=id.split(',')[0]
   if (usertype=='ngo' ) {
-    ngo.findById(id, function(err, user) {
+    ngo.findById(id).lean().exec(function(err, user) {
+      user["usertype"] = 'ngo';
       return done(err, user);
     });
 
   }else {
-      console.log("this is id")
-      console.log(id)
-    patron.findById(id, function(err, user) {
+      
+    patron.findById(id).lean().exec(function(err, user) {
+      user["usertype"] = 'patron';
      return done(err, user);
     });
   }

@@ -125,7 +125,7 @@ router.post('/signup',urlencodedparser,[
     };
     newPatron.password=hash;
     newPatron.save()
-    .then(user=>res.redirect('./patron-login'))
+    .then(user=>res.redirect('./patronForm'))
     .catch(err=>console.log(err))
 
     }))

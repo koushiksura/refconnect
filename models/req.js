@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const patron = require('./patron');
+const patronOffer = require('./patronoffer');
 const refugee = require('./refugee')
 const ngouser = require('./ngouser')
 
@@ -27,7 +27,7 @@ const ReqSchema = new mongoose.Schema({
     },
     assigned : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : patron
+        ref : patronOffer
     },
     time : {
         type : Date,

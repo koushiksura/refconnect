@@ -9,7 +9,7 @@ const Refugee = require('../models/refugee')
 const RefugeeUser = require('../models/refugee')
 const PatronUser = require('../models/patron')
 
-const PatronOffer = require('../models/patronoffer.js')
+const PatronOffer = require('../models/patronoffer')
 
 // Searching module
 const MiniSearch = require('minisearch')
@@ -33,18 +33,41 @@ bodyParser = require('body-parser').json();
 
 // ngouser_id = '622d5aa13b43b65219d17e80'
 
-router.get('/hello',(req,res)=>{
-    res.render('helloworld.ejs')
-  });
+
+
+function ngoAuthMiddleware(req, res, next) {
+  if (req.isAuthenticated()){
+    if(req.user.usertype == 'ngo'){
+      return next();
+    }
+    else {
+      return res.sendStatus(404)
+    }
+  }
+  res.redirect('/auth/login');
+}
+
+function patronAuthMiddleware(req, res, next) {
+  if (req.isAuthenticated()){
+    if(req.user.usertype == 'patron'){
+      return next();
+    }
+    else {
+      return res.sendStatus(404)
+    }
+  }
+  res.redirect('/auth/patron-login');
+}
+
 
     // When the New Refugee form is visited
-    router.get('/refugeeForm',(req,res)=>{
+    router.get('/refugeeForm',ngoAuthMiddleware,(req,res)=>{
       res.render('refugeeFormTemplate.ejs')
     });
 
 
   // When the SUBMIT button on the new refugee form is hit.
-    router.post('/refugeeForm', (req, res)=>{
+    router.post('/refugeeForm', ngoAuthMiddleware,(req, res)=>{
     let newRefugeeUser = new RefugeeUser({
 
         firstname: req.body.firstname,
@@ -65,44 +88,78 @@ router.get('/hello',(req,res)=>{
 
 
     // When the Patron form is visited
-    router.get('/patronForm',(req,res)=>{
-        res.render('patronForm.ejs')
+    router.get('/patronForm',patronAuthMiddleware,(req,res)=>{
+        res.render('patronForm.ejs',{email:req.user.email})
       });
 
-      router.get('/refugeeRequestForm',(req,res)=>{
+      router.get('/refugeeRequestForm',ngoAuthMiddleware,(req,res)=>{
           res.render('refugeeRequestForm.ejs')
         });
 
-      router.post('/newRefugeeRequestRegistration',(req,res)=>{
-        console.log(req.body)
-        let refugee_req = new Refugeerequest({
-          
+      router.post('/newRefugeeRequestRegistration',ngoAuthMiddleware,async (req,res)=>{
+        console.log("lol")
+        console.log(req.body);
+        const refs = await Refugee.aggregate(
+          [ 
+            { 
+            $match : { 
+              "$expr": {
+                        "$in": [
+                          {"firstname" : "$firstname" ,"lastname" : "$lastname"},
+                          req.body.refugees           
+                        ]
+                      }
+                    } 
+          },
+          {
+            "$project": {
+              "_id": 1,
+            }
+          } 
+        ]
+        ).allowDiskUse(true).exec();
+        const refugee_ids = refs.map(x=>x["_id"])
+        console.log("ngo id",req.user._id )
+        let refRequest = new Refugeerequest({
+          NgoId: mongoose.Types.ObjectId(req.user._id),
+          refugees : refugee_ids,
+          numofppl :  refugee_ids.length,
+          status : "pending"
         })
-        res.redirect('/ngo_view')
+        
+        await refRequest.save()
+        .then((res)=>{
+          console.log("Save Successful!");
+        })
+        .catch((err)=>{
+          throw err;
+        })
+        res.redirect('/ngo_view');
         
       })  
 
     // When the SUBMIT button on the new Patron form is hit.
     router.post('/patronForm',(req,res)=>{
-    let newPatronUser = new PatronUser({
-        name: req.body.firstname + req.body.lastname,
+      PatronUser.findOneAndUpdate({"_id":req.user._id},{
+        name: req.body.firstname + " " + req.body.lastname,
         phone_number: req.body.phone_number,
-        email: req.body.email,
         address: req.body.street + " "
         + req.body.locality + " " +
         req.body.city + " " + req.body.zip,
-        password: "Patron@1234"
-
+      }).then((success)=>{
+        res.redirect('/patronOfferForm');
       })
+    // let newPatronUser = new PatronUser()
 
-        newPatronUser.save()
-        .then(res.redirect('/patronOfferForm'))
+    //     newPatronUser.save()
+    //     .then(res.redirect('/patronOfferForm'))
     })
 
 
-router.get('/ngo_view',(req,res)=>{
+router.get('/ngo_view',ngoAuthMiddleware,(req,res)=>{
 console.log(req.user)
-  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(req.user._id)}).lean().then(async (requests)=>{
+  Refugeerequest.find({NgoId : new mongoose.Types.ObjectId(req.user._id),status:'pending'}).lean().then(async (requests)=>{
+    console.log(requests)
       for (let  i = 0; i < requests.length;i++){
         const each_names = [];
         requests[i].names = [];
@@ -130,26 +187,28 @@ console.log(req.user)
 })
 
 
-router.post('/getPatrons',(req,res)=>{
+router.post('/getPatrons',ngoAuthMiddleware,(req,res)=>{
 
-    // console.log(Number(req.body.totalPeople))
-    PatronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) }}).lean().then(async (response)=>{
+    
+    PatronOffer.find({noPeople:{ $eq: Number(req.body.totalPeople) },status:"pending"}).lean().then(async (response)=>{
         console.log("lol")
+        console.log(response)
         for (var i = 0;i < response.length;i++){
+          console.log(response[i].patronID)
             await PatronUser.findOne({"_id":new mongoose.Types.ObjectId(response[i].patronID)}).then((res1)=>{
                 console.log(res1)
-                response[i].name = res1.name;
+                if(res1 != null)
+                  response[i].name = res1.name;
             })
         }
         console.log(response)
         res.json({"patrons":response})
     })
-    // console.log("lol")
-    // console.log(response)
+   
     
 })
 
-router.post('/getPatronDetails',(req,res)=>{
+router.post('/getPatronDetails',ngoAuthMiddleware,(req,res)=>{
   console.log("----------------------")
   console.log(req.body)
   const Id  = req.body.Id;
@@ -173,7 +232,7 @@ router.get('/findPeople',(req,res)=>{
 
 
 // Used to display Refugee Request Registration
-router.get('/newRefugeeRequestRegistration', (res, req)=>{
+router.get('/newRefugeeRequestRegistration',ngoAuthMiddleware, (res, req)=>{
     res.render('refugeeRequestForm.ejs')
 })
 
@@ -351,22 +410,30 @@ router.post('/getRefugees', (req, res)=> {
   });
 
   // When the New Refugee form is visited
-  router.get('/patronOfferForm',(req,res)=>{
-    res.render('patronOfferForm.ejs')
+  router.get('/patronOfferForm',patronAuthMiddleware,(req,res)=>{
+    PatronUser.findById(req.user._id).then((patron)=>{
+      if(patron.name == undefined){
+        return res.redirect('./patronForm')
+      }else{
+        return res.render('patronOfferForm.ejs')
+      }
+    })
+    
   });
 
-  router.post('/patronOfferForm',async (req,res)=>{
+  router.post('/patronOfferForm',patronAuthMiddleware,async (req,res)=>{
     console.log(req.body)
     
       let patronoff = new PatronOffer({
-        patronID:new mongoose.Types.ObjectId('622d7b6cc5c83d313e74fb7e'),
+        patronID:new mongoose.Types.ObjectId(req.user._id),
         noPeople:req.body.age,
         addressOfAccomodation : {
           street:req.body.street,
           locality:req.body.locality,
           city:req.body.city,
           zip:req.body.zip
-        }
+        },
+        status : 'pending'
       })
       await patronoff.save().then(()=>{
         console.log("save successfull.")
@@ -391,55 +458,17 @@ router.get('/addNewPatronOffer', (req, res)=>{
 .then(console.log("SAVED!"))
 })
 
+router.post('/assignRequest',(req,res)=>{
+  Refugeerequest.findOneAndUpdate({"_id": req.body.refugeeReqId},{"assigned" : new mongoose.Types.ObjectId(req.body.patronOfferId),"status":"complete"}).then((response)=>{
+    PatronOffer.findOneAndUpdate({"_id":req.body.patronOfferId},{status:"complete"}).then((poRes)=>{
+      return res.sendStatus(200);
+    })
+    
+  })
+});
 
 
 
   module.exports = router;
 
 
-//   const express=require('express');
-// const { check, validationResult } = require('express-validator');
-// // const session = require('express-session');
-
-// const mongoose = require('mongoose')
-// const NGOUser = require('../models/ngouser')
-// const request = require('../models/req')
-
-// const router = express.Router();
-// const bodyparser=require('body-parser');
-// var nodemailer = require('nodemailer');
-// var urlencodedparser=bodyparser.urlencoded({extended:false});
-// bodyParser = require('body-parser').json();
-
-// router.get('/hello',(req,res)=>{
-//     res.render('helloworld.ejs')
-//   });
-
-// router.get('/push',(req,res)=>{
-//     let newNGOUser = new NGOUser({
-//         name: 'WeLovePeace',
-//         contact: 9889889889,
-//         email: 'welovepeace@go.com',
-//         password: 'hi@1234',
-//         home_address:{ street: 'Shein Kutler Road',
-//         locality: 'Meine glucklish', city: 'Berlin', zipcode: '120728'}
-// })
-
-// newNGOUser.save()
-// .then(console.log("SAVED!"))
-//   });
-
-// router.get('/req',(req,res)=>{
-//     let newreq = new request({
-//         refugees : ['622d27ef3ac00628861f6551'],
-//         numofppl: ['622d27ef3ac00628861f6551'].length,
-//         status: 'Pending',
-//         assigned: '622d247386c929fa64d0fffb'
-//     })
-
-// newreq.save()
-// .then(console.log("Saved."))
-// })
-
-
-//   module.exports = router;

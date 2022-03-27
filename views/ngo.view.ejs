@@ -1232,9 +1232,9 @@
          <div style="display: flex;height: calc(100vh - 19.5rem); margin-bottom: 1rem; padding: 0px 24px;gap: 1rem;">
             <div style="display: flex;flex-direction: column;flex-basis: 30vw;overflow-y: auto;">
                 <% for(i=0;i < refugee_requests.length;i++ ){ %>
-                <div class="MuiBox-root css-k55ac4">
+                <div class="MuiBox-root css-k55ac4" id = "<%=refugee_requests[i]._id%>">
                     <span class="MuiBadge-root css-1jjdjtk"><span class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-1thnnqk">Refugee Requests</span></span>
-                    <div class="MuiBox-root css-1w58niz" onclick = "getPatrons('<%=refugee_requests[i].names.length%>')">
+                    <div class="MuiBox-root css-1w58niz" onclick = "getPatrons('<%=refugee_requests[i].names.length%>','<%=refugee_requests[i]._id%>')">
                         <% for(j=0;j < refugee_requests[i].names.length;j++){%>
                        <p class="MuiTypography-root MuiTypography-body2 css-10hksn" ><%=refugee_requests[i].names[j]%></p>
                        <%}%>
@@ -1262,7 +1262,9 @@
    </body>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
    <script>
-       function getPatrons(totalp){
+      current_request_id = ""
+       function getPatrons(totalp,id){
+         current_request_id = id
         document.getElementById("patronDetails").innerHTML=""
            console.log(totalp)
        $.ajax({
@@ -1321,7 +1323,7 @@ function getPatronDetails(id){
                         <div class="MuiBox-root css-1w58niz">
                            <p class="MuiTypography-root MuiTypography-body2 css-10hksn" onclick = "getPatrons()">`+data.patron_details.address+`</p>
                         </div>
-                        <button style="margin-left: auto;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button" onclick="findPeople()">Assign Refugee<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
+                        <button style="margin-left: auto;" class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root css-1616pjc" tabindex="0" type="button" onclick="assign('`+data.patron_details._id + `','`+ current_request_id +`')">Assign Refugee<span class="MuiTouchRipple-root css-w0pj6f"></span></button>
                         
                      </div>
             `;
@@ -1339,6 +1341,25 @@ function addRefugee(){
 }
 function createRefugeeRequest(){
     window.location.href = '/refugeeRequestForm'
+}
+
+function assign(patronOfferId,refugeeReqId){
+   $.ajax({
+        type:'POST',
+        url:'/assignRequest',
+        data:{
+          patronOfferId : patronOfferId,
+          refugeeReqId : refugeeReqId
+        },
+        success:function(data){
+            alert("assign successful!");
+            document.getElementById("PatronsBox").innerHTML = "";
+            document.getElementById("patronDetails").innerHTML="";
+            document.getElementById(current_request_id).remove();
+            current_request_id = ";"
+
+        }
+      });
 }
    </script>
 </html>

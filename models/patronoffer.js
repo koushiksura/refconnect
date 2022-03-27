@@ -38,6 +38,10 @@ const PatronOfferSchema =  new mongoose.Schema({
 			lowercase: true,
 		}
 
+	},
+	status:{
+		type: String,
+        required : true
 	}
 
 })
