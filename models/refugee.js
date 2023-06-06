@@ -1,75 +1,71 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const RefugeeSchema = new mongoose.Schema({
-	firstname: {
-		type:String,
-		required:true,
-		lowercase:true,
-		trim : true
-	},
-	lastname : {
-		type : String,
-		required : true,
-		lowercase : true,
-		trim : true
-	},
+  firstname: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+  },
+  lastname: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+  },
 
-	age: {
-		type: Number,
-		required: true,
-	},
+  age: {
+    type: Number,
+    required: true,
+  },
 
-	gender: {
-		type: String,
-		required: true,
-		lowercase: true,
-	},
+  gender: {
+    type: String,
+    required: true,
+    lowercase: true,
+  },
 
-	govID: {
-		type: String,
-		lowercase: true,
-	},
+  govID: {
+    type: String,
+    lowercase: true,
+  },
 
-	email: {
-		type:String,
-	},
+  email: {
+    type: String,
+  },
 
-	phone_number: {
-		type:String,
-		maxlength:11,
-	},
+  phone_number: {
+    type: String,
+    maxlength: 11,
+  },
 
-	home_address: {
+  home_address: {
+    street: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
 
-		street: {
-			type: String,
-			required:true,
-			lowercase:true,
-		},
+    locality: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
 
-		locality: {
-			type: String,
-			required: true,
-			lowercase: true,
-		},
+    city: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
 
-		city: {
-			type: String,
-			required: true,
-			lowercase: true,
-		},
+    zip: {
+      type: Number,
+      required: true,
+      lowercase: true,
+    },
+  },
+});
 
-		zip: {
-			type: Number,
-			required: true,
-			lowercase: true,
-		}
+const Refugee = mongoose.model("Refugee", RefugeeSchema);
 
-	},
-
-})
-
-
-const Refugee = mongoose.model('Refugee',RefugeeSchema);
-
-module.exports=Refugee;
+module.exports = Refugee;

@@ -1,35 +1,31 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const PatronSchema = new mongoose.Schema({
-	name: {
-		type:String,
-		//required:true,
-		lowercase:true
-	},
+  name: {
+    type: String,
+    lowercase: true,
+  },
 
-	email: {
-		type:String,
-		required:true
-	},
+  email: {
+    type: String,
+    required: true,
+  },
 
-	phone_number: {
-		type:String,
-		//required:true,
-		maxlength:11,
-	},
+  phone_number: {
+    type: String,
+    maxlength: 11,
+  },
 
-	address: {
-		type:String,
-		//required:true
-	},
+  address: {
+    type: String,
+  },
 
-	password:{
-		type:String,
-		required:true
-	},
-})
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
+const Patron = mongoose.model("Patron", PatronSchema);
 
-const Patron = mongoose.model('Patron',PatronSchema);
-
-module.exports=Patron; 
+module.exports = Patron;
